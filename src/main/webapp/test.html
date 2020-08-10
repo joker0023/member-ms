@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	<title>test</title>
+	<style type="text/css">
+	</style>
+</head>
+<body>
+	<div class="container">
+		<input name="msg" type="text" class="msg">
+		<input name="longitude" type="text" class="longitude">
+		<input name="latitude" type="text" class="latitude">
+		<button type="button" class="btn">send</button>
+	</div>
+	
+	<script type="text/javascript" src="./assets/jquery/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript">
+		function guid() {
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+				var r = Math.random() * 16 | 0,
+					v = c == 'x' ? r : (r & 0x3 | 0x8);
+				return v.toString(16);
+			});
+		}
+		
+		var sid = guid();
+		var socketUrl="ws://localhost:9090/ws/" + sid;
+        console.log(socketUrl);
+        var socket = new WebSocket(socketUrl);
+       	socket.onopen = function() {
+            console.log("onopen");
+        };
+        socket.onmessage = function(msg) {
+            console.log('onmessage', msg.data);
+        };
+        socket.onclose = function() {
+            console.log("onclose");
+        };
+        socket.onerror = function() {
+            console.error("onerror");
+        }
+        
+        $('.btn').click(function() {
+        	var msg = $('.msg').val();
+        	var longitude = $('.longitude').val();
+        	var latitude = $('.latitude').val();
+        	if (!msg || !latitude || !longitude) {
+        		return;
+        	}
+        	var text = JSON.stringify({
+        		message: msg,
+        		longitude: longitude,
+        		latitude: latitude,
+        		sid: sid
+        	});
+        	socket.send(text);
+        });
+	</script>
+</body>
+</html>
