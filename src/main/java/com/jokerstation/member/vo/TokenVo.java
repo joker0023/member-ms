@@ -11,5 +11,5 @@ public class TokenVo {
 	
 	private Long timeMillis;
 	
-	private String openId;
+	private Long userId;
 }

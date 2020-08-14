@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.jokerstation.common.data.ErrorCode;
 import com.jokerstation.common.data.ResultModel;
 
 @RestControllerAdvice
@@ -21,7 +22,7 @@ public class ControllerExceptionHandler {
 		
 		response.setCharacterEncoding("UTF-8");
 		
-		String code = "1";
+		String code = ErrorCode.SYSTEM_ERROR.getCode();
 		String message = "系统异常: " + exception.getMessage();
 		if (exception instanceof BizException) {
 			//业务错误返回正常，通过errorMsg显示错误

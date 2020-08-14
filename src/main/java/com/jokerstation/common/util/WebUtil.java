@@ -96,7 +96,7 @@ public class WebUtil {
 		
 		CloseableHttpClient client = null;
 		if (request.getURI().toString().startsWith("https://")) {
-			System.out.println("is https");
+//			System.out.println("is https");
 			client = createSSLClientDefault();
 		} else {
 			client = HttpClientBuilder.create().build();

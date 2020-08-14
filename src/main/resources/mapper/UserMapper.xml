@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jokerstation.member.mapper.UserMapper" >
+
+	<select id="listMembers" resultType="com.jokerstation.member.pojo.User">
+		SELECT 
+		u.id,
+		u.nick,
+		u.avatar,
+		u.remark,
+		u.phone 
+		FROM user u 
+		INNER JOIN member m ON m.user_id=u.id 
+		WHERE m.shop_id=#{shopId} 
+		<if test="keyWord != null and keyWord != ''" >
+			AND (u.nick LIKE CONCAT('%',#{keyWord},'%') OR u.phone LIKE CONCAT('%',#{keyWord},'%') )
+		</if>
+		ORDER BY m.created
+	</select>
+	
+	<select id="listClerks" resultType="com.jokerstation.member.pojo.User">
+		SELECT 
+		u.id,
+		u.nick,
+		u.avatar,
+		u.remark,
+		u.phone 
+		FROM user u 
+		INNER JOIN seller s ON s.user_id=u.id 
+		WHERE s.shop_id=#{shopId} AND s.type=2
+		<if test="keyWord != null and keyWord != ''" >
+			AND (u.nick LIKE CONCAT('%',#{keyWord},'%') OR u.phone LIKE CONCAT('%',#{keyWord},'%') )
+		</if>
+		ORDER BY s.created
+	</select>
+</mapper>

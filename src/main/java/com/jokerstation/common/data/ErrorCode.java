@@ -7,7 +7,8 @@ public enum ErrorCode {
 	SERVICE_ILLEGAL("1002", "业务非法"),
 	MISSING_TIMESTAMP("1003", "缺少时间戳"),
 	EXPIRED("1004", "请求过期"),
-	SIGN_ILLEGAL("1005", "签名不合法");
+	SIGN_ILLEGAL("1005", "签名不合法"),
+	REQUEST_ILLEGA("1006", "请求非法");
 	
 	private String code;
 	private String msg;

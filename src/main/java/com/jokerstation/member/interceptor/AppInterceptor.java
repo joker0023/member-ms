@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jokerstation.common.data.ErrorCode;
 import com.jokerstation.common.util.HttpUtil;
 import com.jokerstation.member.service.AppService;
 import com.jokerstation.member.vo.TokenVo;
@@ -29,12 +30,12 @@ public class AppInterceptor implements HandlerInterceptor {
 			HttpServletResponse response, Object paramObject) throws Exception {
 		String token = request.getHeader("token");
 		if (null == token) {
-			HttpUtil.setResponse(response, 403, "非法访问");
+			HttpUtil.setResponse(response, 403, ErrorCode.REQUEST_ILLEGA.getMsg());
 			return false;
 		}
 		TokenVo tokenVo = AppService.getTokenVo(token);
 		if (null == tokenVo) {
-			HttpUtil.setResponse(response, 403, "token已失效");
+			HttpUtil.setResponse(response, 403, ErrorCode.EXPIRED.getMsg());
 			return false;
 		} else {
 			tokenVo.setTimeMillis(System.currentTimeMillis());

@@ -29,5 +29,7 @@ public class User implements Serializable {
 	
 	private Byte userStatus;
 	
+	private Integer maxShop;
+	
 	private Date created;
 }

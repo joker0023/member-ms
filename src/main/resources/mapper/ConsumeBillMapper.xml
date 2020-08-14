@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jokerstation.member.mapper.ConsumeBillMapper" >
+
+	<select id="sumByShop" resultType="long">
+		SELECT IFNULL(sum(rate),0) 
+		FROM consume_bill where shop_id=#{shopId}
+	</select>
+
+	<select id="selectConsumeBillVos" resultType="com.jokerstation.member.vo.ConsumeBillVo">
+		SELECT 
+		b.id,
+		b.user_id as userId,
+		b.shop_id as shopId,
+		b.rate,
+		b.remark,
+		b.operate_user_id as operateUserId,
+		u.nick as operateUserNick
+		FROM consume_bill b 
+		INNER JOIN user u ON u.id=b.operate_user_id
+		<where>
+			<if test="shopId != null and shopId != ''">
+				AND b.shop_id=#{shopId}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND b.user_id=#{userId}
+			</if>
+		</where>
+		ORDER BY b.created desc
+	</select>
+</mapper>
