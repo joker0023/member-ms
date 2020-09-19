@@ -1,5 +1,6 @@
 package com.jokerstation.member.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import com.jokerstation.common.data.ErrorCode;
 import com.jokerstation.common.data.ResultModel;
 import com.jokerstation.common.exception.BizException;
 import com.jokerstation.member.pojo.Seller;
+import com.jokerstation.member.pojo.Shop;
 import com.jokerstation.member.pojo.User;
 import com.jokerstation.member.service.AppService;
 import com.jokerstation.member.vo.ConsumeBillVo;
@@ -37,6 +39,19 @@ public class AppController {
 
 	private static Logger logger = LoggerFactory.getLogger(AppController.class);
 	
+	@GetMapping("/getUser")
+	public ResultModel getUser() {
+		String token = getToken();
+		User user = appService.getUser(token);
+		return new ResultModel(user);
+	}
+	
+	@GetMapping("/getOwnerShop")
+	public ResultModel getOwnerShop() {
+		String token = getToken();
+		List<Shop> shops = appService.getOwnerShop(token);
+		return new ResultModel(shops);
+	}
 
 	@PostMapping("/updateUser")
 	public ResultModel updateUser(@RequestBody Map<String, String> data) {
@@ -73,7 +88,10 @@ public class AppController {
 			throw new BizException(ErrorCode.PARAM_ILLEGAL);
 		}
 		
-		checkToken(getToken(), shopId);
+		Seller seller = checkToken(getToken(), shopId);
+		if (seller.getType() != Seller.TYPE_OWNER) {
+			throw new BizException(ErrorCode.REQUEST_ILLEGA);
+		}
 		appService.updateShop(shopId, shopName, remark);
 		return new ResultModel();
 	}
@@ -89,6 +107,7 @@ public class AppController {
 		ShopInfoVo shopInfoVo = appService.getShopInfoVo(token, shopId);
 		return new ResultModel(shopInfoVo);
 	}
+	
 	
 	@GetMapping("/listMembers")
 	public ResultModel listMembers(Long shopId, String keyWord, int page, int size) {

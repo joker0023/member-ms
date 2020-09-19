@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -42,6 +43,8 @@ import com.jokerstation.member.vo.MemberVo;
 import com.jokerstation.member.vo.RechargeBillVo;
 import com.jokerstation.member.vo.ShopInfoVo;
 import com.jokerstation.member.vo.TokenVo;
+
+import tk.mybatis.mapper.entity.Example;
 
 @Service
 public class AppService {
@@ -160,6 +163,11 @@ public class AppService {
 	
 	private User selectUserByOpenId(String openId) {
 		return userDao.selectByOpenId(openId);
+	}
+	
+	public User getUser(String token) {
+		Long userId = getTokenVo(token).getUserId();
+		return userMapper.selectByPrimaryKey(userId);
 	}
 	
 	public void updateUser(String token, String nick, String avatar) {
@@ -419,6 +427,21 @@ public class AppService {
 		return false;
 	}
 	
+	
+	public List<Shop> getOwnerShop(String token) {
+		Long userId = getTokenVo(token).getUserId();
+		Seller record = new Seller();
+		record.setUserId(userId);
+		List<Seller> sellers = sellerMapper.select(record);
+		List<Long> shopIds = sellers.stream().map(Seller::getShopId).collect(Collectors.toList());
+		if (shopIds.size() == 0) {
+			return null;
+		}
+		
+		Example example = new Example(Shop.class);
+		example.createCriteria().andIn("id", shopIds);
+		return shopMapper.selectByExample(example);
+	}
 	
 	
 	
